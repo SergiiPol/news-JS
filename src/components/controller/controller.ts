@@ -1,22 +1,34 @@
 import AppLoader from './appLoader';
 
+
+type Resp = {
+    endpoint: string,
+        options?:{
+        sources: string
+       }
+    callback?: (data:object[])=>void;
+    sources: [];
+    articles: [];
+}
+
 class AppController extends AppLoader {
-    getSources(callback) {
+    getSources(callback:((data?: Resp)=> void)| undefined ) {
         super.getResp(
             {
                 endpoint: 'sources',
+               
             },
             callback
         );
     }
 
-    getNews(e, callback) {
-        let target = e.target;
-        const newsContainer = e.currentTarget;
+    getNews(e: Event, callback:((data?: Resp)=> void)| undefined ) {
+        let target = e.target  as HTMLTemplateElement;
+        const newsContainer = e.currentTarget as HTMLElement;
 
-        while (target !== newsContainer) {
+        while (target !== newsContainer ) {
             if (target.classList.contains('source__item')) {
-                const sourceId = target.getAttribute('data-source-id');
+                const sourceId = target.getAttribute('data-source-id') as string;
                 if (newsContainer.getAttribute('data-source') !== sourceId) {
                     newsContainer.setAttribute('data-source', sourceId);
                     super.getResp(
@@ -31,7 +43,7 @@ class AppController extends AppLoader {
                 }
                 return;
             }
-            target = target.parentNode;
+            target = (target.parentNode) as HTMLTemplateElement;
         }
     }
 }
